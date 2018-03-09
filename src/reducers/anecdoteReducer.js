@@ -7,7 +7,7 @@ const anecdotesAtStart = [
   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
 ]
 
-const getId = () => (100000*Math.random()).toFixed(0)
+const getId = () => (100000 * Math.random()).toFixed(0)
 
 const asObject = (anecdote) => {
   return {
@@ -20,18 +20,41 @@ const asObject = (anecdote) => {
 const initialState = anecdotesAtStart.map(asObject)
 
 const reducer = (store = initialState, action) => {
-  if (action.type==='VOTE') {
-    const old = store.filter(a => a.id !==action.id)
-    const voted = store.find(a => a.id === action.id)
+  console.log(action.type)
 
-    return [...old, { ...voted, votes: voted.votes+1} ]
+  switch (action.type) {
+    case 'VOTE':
+      console.log(action)
+      console.log('actionId:')
+      console.log(action.data.id)
+      const old = store.filter(a => a.id !== action.data.id)
+      const voted = store.find(a => a.id === action.data.id)
+      console.log(voted)
+      return [...old, { ...voted, votes: voted.votes + 1 }]
+    case 'CREATE':
+      return [...store, { content: action.data.content, id: getId(), votes: 0 }]
+    default:
+      return store
   }
-  if (action.type === 'CREATE') {
-
-    return [...store, { content: action.content, id: getId(), votes:0 }]
-  }
-
-  return store
 }
+
+export const voteAnecdote = (id) => {
+  console.log("voteAnecdote")
+  console.log(id)
+  return { type: 'VOTE', 
+    data: { id }
+  }  
+}
+
+
+export const createAnecdote = (content) => {
+  console.log("createAnecdote")
+  console.log(content)
+  return {
+    type: 'CREATE',
+    data: {content }
+  }  
+}
+
 
 export default reducer
